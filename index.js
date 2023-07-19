@@ -17,6 +17,8 @@ app.use(express.static('public'));
 
 app.use(headerParser)
 
+app.set('trust proxy', true)
+
 // http://expressjs.com/en/starter/basic-routing.html
 app.get('/', function (req, res) {
   res.sendFile(__dirname + '/views/index.html');
@@ -29,7 +31,8 @@ app.get('/api/hello', function (req, res) {
 
 app.get('/api/whoami', (req, res) => {
   const headers = req.headers
-  res.json({language: headers['accept-language'], software: headers['user-agent']})
+  let ipAddress = req.ip
+  res.json({ipAddress, language: headers['accept-language'], software: headers['user-agent']})
 })
 
 // listen for requests :)
