@@ -4,6 +4,7 @@
 // init project
 require('dotenv').config();
 var express = require('express');
+const headerParser = require('header-parser')
 var app = express();
 
 // enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
@@ -14,6 +15,8 @@ app.use(cors({ optionsSuccessStatus: 200 })); // some legacy browsers choke on 2
 // http://expressjs.com/en/starter/static-files.html
 app.use(express.static('public'));
 
+app.use(headerParser)
+
 // http://expressjs.com/en/starter/basic-routing.html
 app.get('/', function (req, res) {
   res.sendFile(__dirname + '/views/index.html');
@@ -23,6 +26,11 @@ app.get('/', function (req, res) {
 app.get('/api/hello', function (req, res) {
   res.json({ greeting: 'hello API' });
 });
+
+app.get('/api/whoami', (req, res) => {
+  const headers = req.headers
+  res.json({language: headers['accept-language'], software: headers['user-agent']})
+})
 
 // listen for requests :)
 var listener = app.listen(process.env.PORT || 3000, function () {
